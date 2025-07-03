@@ -21,8 +21,11 @@ const metadata = {
 };
 
 type DAppConnectorContext = {
-  dAppConnector: typeof DAppConnector | null;
+  dAppConnector: DAppConnector | null;
   userAccountId: string | null;
+  sessionTopic: string | null;
+  disconnect: (() => Promise<void>) | null;
+  refresh: (() => void) | null;
 };
 
 const DAppConnectorContext = createContext<DAppConnectorContext | null>(null);
@@ -35,12 +38,50 @@ type ClientProvidersProps = {
 export function ClientProviders({ children }: ClientProvidersProps) {
   const [dAppConnector, setDAppConnector] = useState<DAppConnector | null>(null);
   const [isReady, setIsReady] = useState(false);
-
   const [userAccountId, setUserAccountId] = useState<string | null>(null);
+  const [sessionTopic, setSessionTopic] = useState<string | null>(null);
 
+  // Listen for account/session changes using events$
   useEffect(() => {
-    setUserAccountId(dAppConnector?.signers?.[0]?.getAccountId().toString() ?? null);
+    if (!dAppConnector) return;
+    const subscription = (dAppConnector as any).events$?.subscribe((event: { name: string; data: any }) => {
+      if (event.name === 'accountsChanged' || event.name === 'chainChanged') {
+        setUserAccountId(dAppConnector.signers?.[0]?.getAccountId().toString() ?? null);
+        // Try to get topic from event data
+        if (event.data && event.data.topic) {
+          setSessionTopic(event.data.topic);
+        } else if (dAppConnector.signers?.[0]?.topic) {
+          setSessionTopic(dAppConnector.signers[0].topic);
+        } else {
+          setSessionTopic(null);
+        }
+      } else if (event.name === 'session_delete' || event.name === 'sessionDelete') {
+        setUserAccountId(null);
+        setSessionTopic(null);
+      }
+    });
+    // Set initial state
+    setUserAccountId(dAppConnector.signers?.[0]?.getAccountId().toString() ?? null);
+    if (dAppConnector.signers?.[0]?.topic) setSessionTopic(dAppConnector.signers[0].topic);
+    return () => subscription && subscription.unsubscribe();
   }, [dAppConnector]);
+
+  // Provide a disconnect function
+  const disconnect = async () => {
+    if (dAppConnector && sessionTopic) {
+      await dAppConnector.disconnect(sessionTopic);
+      setUserAccountId(null);
+      setSessionTopic(null);
+    }
+  };
+
+  // Provide a refresh function
+  const refresh = () => {
+    if (dAppConnector) {
+      setUserAccountId(dAppConnector.signers?.[0]?.getAccountId().toString() ?? null);
+      setSessionTopic(dAppConnector.signers?.[0]?.topic ?? null);
+    }
+  };
 
   useEffect(() => {
     let isMounted = true;
@@ -73,7 +114,7 @@ export function ClientProviders({ children }: ClientProvidersProps) {
     );
 
   return (
-    <DAppConnectorContext.Provider value={{ dAppConnector, userAccountId }}>
+    <DAppConnectorContext.Provider value={{ dAppConnector, userAccountId, sessionTopic, disconnect, refresh }}>
       <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
     </DAppConnectorContext.Provider>
   );
