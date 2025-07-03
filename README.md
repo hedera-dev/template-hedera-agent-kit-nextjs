@@ -8,8 +8,6 @@ OPENAI_API_KEY=""
 HEDERA_ACCOUNT_ID=""
 HEDERA_PRIVATE_KEY=""
 HEDERA_NETWORK=""
-USER_ACCOUNT_ID=""
-USER_PRIVATE_KEY=""
 
 NEXT_PUBLIC_WALLET_CONNECT_ID=""
 ```
@@ -17,7 +15,7 @@ NEXT_PUBLIC_WALLET_CONNECT_ID=""
 
 run the server:
 
-1. `pnpm install`
-2. `pnpm dev`
+1. `npm install`
+2. `npm run dev`
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
