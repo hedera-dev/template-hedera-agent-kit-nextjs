@@ -1,0 +1,49 @@
+{
+  "name": "hedera-agent-kit-nextjs-example",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --turbopack",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@hashgraph/hedera-wallet-connect": "2.0.0-canary.811af2f.0",
+    "@hashgraph/proto": "^2.19.0",
+    "@hashgraph/sdk": "^2.67.0",
+    "@hashgraphonline/hashinal-wc": "^1.0.100",
+    "@reown/appkit": "^1.7.11",
+    "@reown/appkit-adapter-wagmi": "^1.7.11",
+    "@reown/appkit-common": "^1.7.12",
+    "@tanstack/react-query": "^5.81.5",
+    "@walletconnect/modal": "^2.7.0",
+    "@walletconnect/modal-core": "^2.7.0",
+    "@walletconnect/qrcode-modal": "^1.8.0",
+    "@walletconnect/types": "^2.21.4",
+    "@walletconnect/universal-provider": "^2.21.4",
+    "@walletconnect/utils": "^2.21.4",
+    "fetch-retry": "^6.0.0",
+    "hedera-agent-kit": "^2.0.0",
+    "lucide-react": "^0.525.0",
+    "next": "15.3.4",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "viem": "^2.31.6",
+    "wagmi": "^2.15.6",
+    "zod": "^3.25.67"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3",
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "15.3.4",
+    "eslint-config-prettier": "^10.1.5",
+    "prettier": "^3.6.2",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
+}
