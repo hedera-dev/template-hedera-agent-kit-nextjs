@@ -4,7 +4,7 @@ import { ChatRequest } from '@/shared/types';
 
 const chatResponseSchema = z.object({
   message: z.string(),
-  transactionBytes: z.string().optional(),
+  transactionBytes: z.string(),
 });
 
 export async function handleChatRequest(body: ChatRequest) {
@@ -16,7 +16,6 @@ export async function handleChatRequest(body: ChatRequest) {
     body: JSON.stringify(body),
   });
   const rawData = await response.json();
-
   return chatResponseSchema.parse(rawData);
 }
 

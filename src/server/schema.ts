@@ -6,6 +6,7 @@ export const chatHistoryMessageSchema = z.object({
 });
 
 export const handleChatBodySchema = z.object({
+  userAccountId: z.string(),
   input: z.string(),
   history: z.array(chatHistoryMessageSchema),
 });
