@@ -64,11 +64,5 @@ export async function initializeAgent(userAccountId: string) {
     returnIntermediateSteps: true,
   }); 
 
-  console.log('agent:', JSON.stringify(agent, null, 2));
-  console.log('tools:', JSON.stringify(tools, null, 2));
-  console.log('memory:', JSON.stringify(memory, null, 2));
-  console.log('agentExecutor:', JSON.stringify(agentExecutor, null, 2));
-  console.log('Initialized agent');
-
   return agentExecutor;
 }
