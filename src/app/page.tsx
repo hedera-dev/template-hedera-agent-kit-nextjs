@@ -33,6 +33,8 @@ export default function Home() {
       history: chatHistory,
     });
 
+    console.log('agentResponse', JSON.stringify(agentResponse, null, 2));
+
     setChatHistory((v) => [
       ...v,
       {

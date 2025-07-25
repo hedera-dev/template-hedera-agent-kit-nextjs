@@ -45,11 +45,16 @@ export async function POST(req: NextRequest) {
         chat_history: body.history,
     });
 
+    console.log('agentResponse in route', JSON.stringify(agentResponse, null, 2));
+
     const response: ResponseData = {
-        message: agentResponse.message ?? '-',
+        message: agentResponse.output ?? '-',
     };
 
     response.transactionBytes = extractBytesFromAgentResponse(agentResponse);
-    response.message = 'Sign transaction bytes';
+    if (response.transactionBytes) {
+        response.message = 'Sign transaction bytes';
+    }
+
     return Response.json(response);
 }
