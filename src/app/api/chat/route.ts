@@ -44,9 +44,6 @@ export async function POST(req: NextRequest) {
         input: body.input,
         chat_history: body.history,
     });
-
-    console.log('agentResponse in route', JSON.stringify(agentResponse, null, 2));
-
     const response: ResponseData = {
         message: agentResponse.output ?? '-',
     };
