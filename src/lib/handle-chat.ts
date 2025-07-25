@@ -16,7 +16,6 @@ export async function handleChatRequest(body: ChatRequest) {
     body: JSON.stringify(body),
   });
   const rawData = await response.json();
-
   return chatResponseSchema.parse(rawData);
 }
 

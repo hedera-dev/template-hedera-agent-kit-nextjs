@@ -28,6 +28,7 @@ export default function Home() {
     ]);
 
     const agentResponse = await mutateAsync({
+      userAccountId: dAppConnector?.signers[0].getAccountId().toString() ?? '',
       input: currentPrompt,
       history: chatHistory,
     });
@@ -45,8 +46,6 @@ export default function Home() {
         signerAccountId: dAppConnector?.signers[0].getAccountId().toString() ?? '',
         transactionList: agentResponse.transactionBytes,
       });
-      console.log('result:', result);
-
       const transactionId = 'transactionId' in result ? result.transactionId : null;
 
       setChatHistory((v) => [

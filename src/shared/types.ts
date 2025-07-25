@@ -4,6 +4,7 @@ export type ChatMessage = {
 };
 
 export type ChatRequest = {
+  userAccountId: string;
   input: string;
   history: ChatMessage[];
 };

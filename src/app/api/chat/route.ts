@@ -9,9 +9,30 @@ type ResponseData = {
     transactionBytes?: string;
 };
 
+function extractBytesFromAgentResponse(response: any): any {
+    if (
+      response.intermediateSteps &&
+      response.intermediateSteps.length > 0 &&
+      response.intermediateSteps[0].observation
+    ) {
+      const obs = response.intermediateSteps[0].observation;
+      try {
+        const obsObj = typeof obs === 'string' ? JSON.parse(obs) : obs;
+        if (obsObj.bytes) {
+            const bytes = obsObj.bytes;
+            const buffer = Buffer.isBuffer(bytes) ? bytes : Buffer.from(bytes.data ?? bytes);
+            return buffer.toString('base64');
+        }
+      } catch (e) {
+        console.error('Error parsing observation:', e);
+      }
+    }
+    return undefined;
+  }
+
 export async function POST(req: NextRequest) {
-    const conversationalAgent = await initializeAgent();
     const data = await req.json();
+    const agentExecutor = await initializeAgent(data.userAccountId);
     const parsedBody = handleChatBodySchema.safeParse(data);
     if (!parsedBody.success) {
         return Response.json({ message: 'Invalid body request' });
@@ -19,14 +40,17 @@ export async function POST(req: NextRequest) {
 
     const body = parsedBody.data;
 
-    const agentResponse = await conversationalAgent.processMessage(body.input, body.history);
-
+    const agentResponse = await agentExecutor.invoke({
+        input: body.input,
+        chat_history: body.history,
+    });
     const response: ResponseData = {
-        message: agentResponse.message ?? '-',
+        message: agentResponse.output ?? '-',
     };
 
-    if ('transactionBytes' in agentResponse) {
-        response.transactionBytes = agentResponse.transactionBytes;
+    response.transactionBytes = extractBytesFromAgentResponse(agentResponse);
+    if (response.transactionBytes) {
+        response.message = 'Sign transaction bytes';
     }
 
     return Response.json(response);
